@@ -1,15 +1,38 @@
-import userModel from "../models/User.model.js"
+import userModel from "../models/User.model.js";
 
-export const findUserByProperty = (key, value)=>{
+const findUserByProperty = (key, value) => {
+  if (key === "_id") {
+    return userModel.findById(value);
+  }
 
-    if(key === '_id'){
-        return userModel.findById(value);
-    }
+  return userModel.findOne({ [key]: value });
+};
 
-    return userModel.findOne({ [key] : value})
-}
+const createNewUser = ({
+  name,
+  email,
+  password,
+  phone,
+  role,
+  accountStatus,
+}) => {
+  const user = new userModel({
+    name,
+    email,
+    password,
+    phone,
+    role: role ? role : ["STUDENT"],
+    accountStatus: accountStatus ? accountStatus : "PENDING",
+  });
+  return user.save();
+};
 
-export const createNewUser = ({name, email, password, phone}) => {
-    const user = new userModel({name, email, password, phone});
-    return user.save()
-}
+const findUser = () => {
+  return userModel.find();
+};
+
+export default {
+  findUserByProperty,
+  createNewUser,
+  findUser,
+};

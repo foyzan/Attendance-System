@@ -1,14 +1,11 @@
 import jwt from 'jsonwebtoken';
 import userModel from '../models/User.model.js'
-export const authenticator = async (req, res, next) => {
+const authenticator = async (req, res, next) => {
   const { authorization } = req.headers;
-  const token = authorization.split(" ")[1];
-  console.log(token);
-
-  if (!token) {
+  if (!authorization) {
     return res.status(401).json({ message: "Authorization error" });
   }
-
+  const token = authorization.split(" ")[1];
   try {
     const decoded = jwt.verify(token, "1234");
     const user = await userModel.findById(decoded._id);
@@ -21,3 +18,6 @@ export const authenticator = async (req, res, next) => {
     return res.status(401).json({ message: "invalid token" });
   }
 };
+
+
+export default authenticator

@@ -1,6 +1,6 @@
 import express from "express";
-import {authenticator} from "./src/middleware/authentication.middleware.js";
 import router from "./src/routes/index.js";
+import authenticator from "./src/middleware/authentication.middleware.js";
 const app = express();
 
 app.use(express.json());

@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
-import { createNewUser, findUserByProperty } from "./user.service.js";
+import userService from "./user.service.js";
 import error from '../utils/errorhandler.js';
 
-export const registerService = async ({ name, email, password, phone }) => {
-    const isUserExit = await findUserByProperty('email', email)
+const registerService = async ({ name, email, password, phone, role, accountStatus}) => {
+    const isUserExit = await userService.findUserByProperty('email', email)
     if (isUserExit) {
         throw error(404, "email already exit")
     }
@@ -12,14 +12,14 @@ export const registerService = async ({ name, email, password, phone }) => {
     const salt = await bcrypt.genSalt(5);
     const hash = await bcrypt.hash(password, salt);
 
-    const user = await createNewUser({name, email, password : hash, phone})
+    const user = await userService.createNewUser({name, email, password : hash, phone, role, accountStatus})
   
     return user;
 }
 
 
-export const loginService = async ({ email, password }) => {
-    const isUserExit = await findUserByProperty('email', email)
+const loginService = async ({ email, password }) => {
+    const isUserExit = await userService.findUserByProperty('email', email)
     if (!isUserExit) {
         
         throw error(400, "wrong credential");
@@ -40,4 +40,10 @@ export const loginService = async ({ email, password }) => {
     return  jwt.sign(payload, "1234", { expiresIn: '1h' })
 
    
+}
+
+
+export default {
+    registerService,
+    loginService
 }
