@@ -3,16 +3,30 @@ import { model, Schema } from "mongoose";
 const StudentAttendanceSchema = new Schema({
     user : {
         type : Schema.Types.ObjectId,
-        ref : 'User'
+        ref : 'User',
+        required : true
     },
 
     attendanceSession: {
         type: Schema.Types.ObjectId,
-        ref : 'AttendanceSession'
+        ref : 'AttendanceSession',
+        required : true
     },
-    createdAt : Date
+   
+}, {
+    timestamps: true
 })
-
+/**
+ * Add the Unique Compound Index
+ * 
+ * same user will not be able to attend twice
+ */
+StudentAttendanceSchema.index({ 
+    user: 1, 
+    attendanceSession: 1 
+}, { 
+    unique: true 
+});
 
 const StudentAttendance = model('StudentAttendance', StudentAttendanceSchema);
 
