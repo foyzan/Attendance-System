@@ -2,7 +2,7 @@
 import AttendanceSessionModel from "../models/AttendanceSession.model.js"
 import { addMinutes, isAfter } from "date-fns";
 import error from "../utils/errorhandler.js";
-const createSession = async ()=>{
+const createSession = async () => {
     const attendanceSession = new AttendanceSessionModel({})
     await attendanceSession.save()
     return attendanceSession

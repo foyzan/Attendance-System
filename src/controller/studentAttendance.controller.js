@@ -1,6 +1,5 @@
 import error from "../utils/errorhandler.js"
-import attendanceSessionService from "../service/attendanceSession.service.js"
-import StudentAttendanceModel from "../models/StudentAttendance.model.js"
+import studentAttendanceService from "../service/studentAttendance.service.js";
 const getAttendance = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -13,25 +12,7 @@ const getAttendance = async (req, res, next) => {
             throw error(400, 'Invalid session ID format');
         }
 
-        // Get session with await
-        const session = await attendanceSessionService.findSession(id);
-        if (!session) {
-            throw error(404, 'Attendance session not found');
-        }
-
-        if (session.status === "COMPLETED") {
-            throw error(400, 'Attendance session has ended');
-        }
-        
-
-        const studentAttendance = new StudentAttendanceModel({
-            user: req.user._id,
-            attendanceSession: id
-        });
-
-        await studentAttendance.save();
-        await StudentAttendanceModel.ensureIndexes();
-
+       const studentAttendance = await studentAttendanceService.createStudentAttendanceService({ userId : req.user._id, attendanceSessionId : id })
 
         res.status(201).json({
             message: 'Attendance marked successfully',
